@@ -9,7 +9,6 @@
   <title>AI Company OS v2</title>
   <style>
     body { font-family: system-ui; max-width: 500px; margin: 0 auto; padding: 20px; padding-top: env(safe-area-inset-top, 20px); }
-    .status { background: #f0f8ff; padding: 20px; border-radius: 12px; margin: 20px 0; }
     button { background: #6b4320; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; }
     .log { background: white; border: 1px solid #ddd; padding: 12px; margin: 10px 0; border-radius: 8px; word-break: break-word; }
     #message { width: 70%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; }
@@ -23,7 +22,7 @@
   <h1>🎉 AI Company OS v2</h1>
 
   <h2>連線狀態</h2>
-  <div id="status" class="connection-status connecting">⏳ 連線中...</div>
+  <div id="status" class="connection-status connecting">⏳ 正在喚醒伺服器...</div>
   <div id="logs" style="max-height: 400px; overflow-y: auto;"></div>
 
   <div style="margin-top: 16px;">
@@ -32,17 +31,38 @@
   </div>
 
   <script>
-    // 自動偵測 host，localhost 和 Render 都能用
     const wsProtocol = location.protocol === "https:" ? "wss:" : "ws:";
     const wsHost = location.host;
     const wsUrl = `${wsProtocol}//${wsHost}/ws`;
-
     let ws;
     const statusEl = document.getElementById("status");
 
-    function connect() {
+    // 先用 HTTP 確認後端活著，再建立 WebSocket
+    async function waitForBackend() {
       statusEl.className = "connection-status connecting";
-      statusEl.innerHTML = "⏳ 連線中...";
+      statusEl.innerHTML = "⏳ 正在喚醒伺服器...";
+
+      for (let i = 0; i < 12; i++) {
+        try {
+          const res = await fetch("/api/health");
+          if (res.ok) {
+            console.log("後端已就緒，建立 WebSocket...");
+            connectWs();
+            return;
+          }
+        } catch (e) {
+          console.log(`等待後端... 第 ${i + 1} 次`);
+        }
+        await new Promise(r => setTimeout(r, 5000));
+      }
+
+      statusEl.className = "connection-status disconnected";
+      statusEl.innerHTML = "❌ 伺服器無回應，請重新整理頁面";
+    }
+
+    function connectWs() {
+      statusEl.className = "connection-status connecting";
+      statusEl.innerHTML = "⏳ 連線 WebSocket 中...";
 
       ws = new WebSocket(wsUrl);
 
@@ -60,30 +80,32 @@
       ws.onclose = () => {
         statusEl.className = "connection-status disconnected";
         statusEl.innerHTML = "❌ 已斷線，5 秒後重連...";
-        setTimeout(connect, 5000);
+        setTimeout(connectWs, 5000);
       };
 
-      ws.onerror = () => {
+      ws.onerror = (err) => {
+        console.error("WebSocket error:", err);
         statusEl.className = "connection-status disconnected";
-        statusEl.innerHTML = "❌ 連線錯誤";
+        statusEl.innerHTML = "❌ 連線錯誤，重試中...";
       };
     }
 
-    connect();
+    // 啟動
+    waitForBackend();
 
     function sendMessage() {
       const input = document.getElementById("message");
       const msg = input.value.trim();
-      if (msg && ws.readyState === WebSocket.OPEN) {
+      if (msg && ws && ws.readyState === WebSocket.OPEN) {
         ws.send(msg);
         input.value = "";
       }
     }
 
-    // 手機鍵盤按 Enter 也能送出
     document.getElementById("message").addEventListener("keydown", (e) => {
       if (e.key === "Enter") sendMessage();
     });
   </script>
 </body>
 </html>
+
