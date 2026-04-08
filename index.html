@@ -1,49 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Abao">
   <title>AI Company OS v2</title>
   <style>
-    body { font-family: system-ui; max-width: 500px; margin: 50px auto; padding: 20px; }
+    body { font-family: system-ui; max-width: 500px; margin: 0 auto; padding: 20px; padding-top: env(safe-area-inset-top, 20px); }
     .status { background: #f0f8ff; padding: 20px; border-radius: 12px; margin: 20px 0; }
     button { background: #6b4320; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; }
-    .log { background: white; border: 1px solid #ddd; padding: 12px; margin: 10px 0; border-radius: 8px; }
+    .log { background: white; border: 1px solid #ddd; padding: 12px; margin: 10px 0; border-radius: 8px; word-break: break-word; }
+    #message { width: 70%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; }
+    .connection-status { padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; }
+    .connected { background: #d4edda; color: #155724; }
+    .disconnected { background: #f8d7da; color: #721c24; }
+    .connecting { background: #fff3cd; color: #856404; }
   </style>
 </head>
 <body>
-  <h1>🎉 AI Company OS v2 - 完整專案</h1>
-  <div class="status">
-    <h2>✅ 後端啟動指令</h2>
-    <pre>cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload</pre>
-    <h2>✅ 前端啟動指令</h2>
-    <pre>cd frontend
-python -m http.server 3000</pre>
-    <p><strong>瀏覽器開：http://localhost:3000</strong></p>
+  <h1>🎉 AI Company OS v2</h1>
+
+  <h2>連線狀態</h2>
+  <div id="status" class="connection-status connecting">⏳ 連線中...</div>
+  <div id="logs" style="max-height: 400px; overflow-y: auto;"></div>
+
+  <div style="margin-top: 16px;">
+    <input id="message" placeholder="輸入訊息測試 WebSocket">
+    <button onclick="sendMessage()">傳送</button>
   </div>
 
-  <h2>目前狀態</h2>
-  <div id="status">等待後端連線...</div>
-  <div id="logs"></div>
-
-  <input id="message" placeholder="輸入訊息測試 WebSocket" style="width: 70%; padding: 12px;">
-  <button onclick="sendMessage()">傳送</button>
-
   <script>
-    const ws = new WebSocket("ws://localhost:8000/ws");
-    ws.onopen = () => document.getElementById("status").innerHTML = "✅ WebSocket 連線成功！";
-    ws.onmessage = (e) => {
-      const logs = document.getElementById("logs");
-      logs.innerHTML += `<div class="log">${e.data}</div>`;
-      logs.scrollTop = logs.scrollHeight;
-    };
+    // 自動偵測 host，localhost 和 Render 都能用
+    const wsProtocol = location.protocol === "https:" ? "wss:" : "ws:";
+    const wsHost = location.host;
+    const wsUrl = `${wsProtocol}//${wsHost}/ws`;
+
+    let ws;
+    const statusEl = document.getElementById("status");
+
+    function connect() {
+      statusEl.className = "connection-status connecting";
+      statusEl.innerHTML = "⏳ 連線中...";
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        statusEl.className = "connection-status connected";
+        statusEl.innerHTML = "✅ WebSocket 連線成功！";
+      };
+
+      ws.onmessage = (e) => {
+        const logs = document.getElementById("logs");
+        logs.innerHTML += `<div class="log">${e.data}</div>`;
+        logs.scrollTop = logs.scrollHeight;
+      };
+
+      ws.onclose = () => {
+        statusEl.className = "connection-status disconnected";
+        statusEl.innerHTML = "❌ 已斷線，5 秒後重連...";
+        setTimeout(connect, 5000);
+      };
+
+      ws.onerror = () => {
+        statusEl.className = "connection-status disconnected";
+        statusEl.innerHTML = "❌ 連線錯誤";
+      };
+    }
+
+    connect();
 
     function sendMessage() {
-      const msg = document.getElementById("message").value;
-      ws.send(msg);
-      document.getElementById("message").value = "";
+      const input = document.getElementById("message");
+      const msg = input.value.trim();
+      if (msg && ws.readyState === WebSocket.OPEN) {
+        ws.send(msg);
+        input.value = "";
+      }
     }
+
+    // 手機鍵盤按 Enter 也能送出
+    document.getElementById("message").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
   </script>
 </body>
 </html>
