@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AI Company OS v2</title>
+  <style>
+    body { font-family: system-ui; max-width: 500px; margin: 50px auto; padding: 20px; }
+    .status { background: #f0f8ff; padding: 20px; border-radius: 12px; margin: 20px 0; }
+    button { background: #6b4320; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+    .log { background: white; border: 1px solid #ddd; padding: 12px; margin: 10px 0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🎉 AI Company OS v2 - 完整專案</h1>
+  <div class="status">
+    <h2>✅ 後端啟動指令</h2>
+    <pre>cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload</pre>
+    <h2>✅ 前端啟動指令</h2>
+    <pre>cd frontend
+python -m http.server 3000</pre>
+    <p><strong>瀏覽器開：http://localhost:3000</strong></p>
+  </div>
+
+  <h2>目前狀態</h2>
+  <div id="status">等待後端連線...</div>
+  <div id="logs"></div>
+
+  <input id="message" placeholder="輸入訊息測試 WebSocket" style="width: 70%; padding: 12px;">
+  <button onclick="sendMessage()">傳送</button>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:8000/ws");
+    ws.onopen = () => document.getElementById("status").innerHTML = "✅ WebSocket 連線成功！";
+    ws.onmessage = (e) => {
+      const logs = document.getElementById("logs");
+      logs.innerHTML += `<div class="log">${e.data}</div>`;
+      logs.scrollTop = logs.scrollHeight;
+    };
+
+    function sendMessage() {
+      const msg = document.getElementById("message").value;
+      ws.send(msg);
+      document.getElementById("message").value = "";
+    }
+  </script>
+</body>
+</html>
