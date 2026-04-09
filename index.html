@@ -11,254 +11,97 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root, [data-theme="light"] {
-      --bg: #f7f2ea; --surface: #fffdf9; --surface-2: #f2e8da;
-      --panel: #ffffff; --border: #d7c1a1; --text: #2d1d10;
-      --muted: #7e6851; --primary: #6d4320; --primary-2: #9f6a37;
-      --accent: #d58b34; --ok: #2c8a52; --warn: #c16f17;
-      --info: #356fa8; --danger: #b64040;
-      --shadow: 0 10px 32px rgba(86,54,24,0.10);
-      --radius: 20px; --radius-sm: 12px;
-      --font-display: 'Noto Serif TC', serif;
-      --font-body: 'Noto Sans TC', sans-serif;
-    }
-    [data-theme="dark"] {
-      --bg: #171311; --surface: #221b18; --surface-2: #2c231f;
-      --panel: #1c1613; --border: #4b3b31; --text: #f3e9db;
-      --muted: #baaa97; --primary: #ca9f6c; --primary-2: #e0b27d;
-      --accent: #f0b35a; --ok: #72c28b; --warn: #efad55;
-      --info: #86b8e5; --danger: #e68b8b;
-      --shadow: 0 10px 32px rgba(0,0,0,0.35);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100dvh; }
-    body {
-      font-family: var(--font-body);
-      background: radial-gradient(circle at top right, rgba(213,139,52,0.12), transparent 28%),
-        linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 78%, #ffffff 22%));
-      color: var(--text);
-    }
-    button, input, select, textarea { font: inherit; }
-
-    /* ── 頂部列 ── */
-    .topbar {
-      position: sticky; top: 0; z-index: 30;
-      backdrop-filter: blur(12px);
-      background: color-mix(in srgb, var(--bg) 78%, transparent);
-      border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
-      padding: 12px 16px;
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .logo-box {
-      width: 42px; height: 42px; border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      display: grid; place-items: center; color: #fff7ef;
-      box-shadow: var(--shadow);
-    }
-    .brand h1 { font-family: var(--font-display); font-size: 1.15rem; }
-    .brand-sub { color: var(--muted); font-size: 0.78rem; }
-    .topbar-right { display: flex; gap: 8px; align-items: center; }
-    .conn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); }
-    .conn-dot.ok { background: var(--ok); }
-    .theme-btn {
-      width: 38px; height: 38px; border-radius: 50%;
-      border: 1px solid var(--border); background: var(--surface);
-      color: var(--text); display: grid; place-items: center; cursor: pointer;
-    }
-
-    /* ── 角色切換底部 Nav ── */
-    .bottom-nav {
-      position: fixed; left: 10px; right: 10px; bottom: 10px; z-index: 50;
-      display: flex; gap: 6px; padding: 6px;
-      border-radius: 18px;
-      background: color-mix(in srgb, var(--panel) 94%, transparent);
-      border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
-      box-shadow: var(--shadow); backdrop-filter: blur(12px);
-    }
-    .bottom-nav button {
-      flex: 1; min-height: 46px; border-radius: 14px;
-      border: 1px solid transparent; background: transparent;
-      color: var(--text); font-size: 0.82rem; font-weight: 700; cursor: pointer;
-    }
-    .bottom-nav button.active {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff8ef;
-    }
-
-    /* ── 主內容區 ── */
-    .app { max-width: 600px; margin: 0 auto; padding: 12px 12px 100px; }
-
-    /* ── 統計列 ── */
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .stat {
-      padding: 14px; border-radius: var(--radius-sm);
-      background: color-mix(in srgb, var(--panel) 96%, transparent);
-      border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
-      box-shadow: var(--shadow);
-    }
-    .stat .k { color: var(--muted); font-size: 0.74rem; margin-bottom: 4px; }
-    .stat .v { font-size: 1.6rem; font-weight: 700; }
-
-    /* ── 卡片 ── */
-    .card {
-      background: color-mix(in srgb, var(--panel) 96%, transparent);
-      border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
-      border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: 16px; margin-bottom: 12px;
-    }
-    .card h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 12px; }
-
-    /* ── 訂單 ticket ── */
-    .ticket {
-      border: 1px solid var(--border); border-radius: 16px;
-      background: var(--surface); padding: 14px; margin-bottom: 10px;
-    }
-    .ticket-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .ticket-id { font-weight: 700; font-size: 0.95rem; }
-    .ticket-meta { color: var(--muted); font-size: 0.76rem; }
-    .status {
-      display: inline-flex; align-items: center; min-height: 28px;
-      padding: 0 10px; border-radius: 999px;
-      font-size: 0.72rem; font-weight: 700; white-space: nowrap;
-    }
-    .s-pending { background: rgba(53,111,168,0.12); color: var(--info); }
-    .s-making  { background: rgba(193,111,23,0.14); color: var(--warn); }
-    .s-done    { background: rgba(44,138,82,0.14); color: var(--ok); }
-    .s-ready   { background: rgba(109,67,32,0.12); color: var(--primary); }
-    .s-delivered { background: rgba(44,138,82,0.08); color: var(--muted); }
-
-    /* ── 品項列 ── */
-    .item-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 12px; border-radius: 12px; margin-bottom: 6px;
-      background: color-mix(in srgb, var(--surface-2) 64%, white 36%);
-      gap: 8px;
-    }
-    .item-info strong { display: block; font-size: 0.9rem; }
-    .item-info small { color: var(--muted); font-size: 0.74rem; }
-    .item-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
-
-    /* ── 按鈕 ── */
-    .btn {
-      min-height: 38px; border-radius: 12px; border: 1px solid var(--border);
-      padding: 0 14px; background: var(--surface); color: var(--text);
-      cursor: pointer; font-size: 0.82rem; font-weight: 500;
-    }
-    .btn.sm { min-height: 32px; padding: 0 10px; font-size: 0.76rem; border-radius: 10px; }
-    .btn.primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #fff8ef; border-color: transparent;
-    }
-    .btn.ok { background: var(--ok); color: #fff; border-color: transparent; }
-    .btn.warn { background: var(--warn); color: #fff; border-color: transparent; }
-    .btn.ghost { background: transparent; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* ── 建單表單 ── */
-    .form-section { margin-bottom: 14px; }
-    .form-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-    .form-row label { font-size: 0.82rem; font-weight: 600; min-width: 50px; }
-    .form-row select, .form-row input {
-      flex: 1; min-height: 38px; padding: 0 10px;
-      border: 1px solid var(--border); border-radius: 10px;
-      background: var(--surface); color: var(--text);
-    }
-    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .menu-item {
-      padding: 10px; border-radius: 12px; border: 1px solid var(--border);
-      background: var(--surface); cursor: pointer; text-align: left;
-    }
-    .menu-item:active { background: var(--surface-2); }
-    .menu-item .mi-name { font-weight: 700; font-size: 0.88rem; }
-    .menu-item .mi-meta { color: var(--muted); font-size: 0.72rem; }
-    .menu-item .mi-price { color: var(--primary); font-weight: 700; font-size: 0.82rem; }
-
-    .cart-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px; border-radius: 12px; background: var(--surface-2); margin-bottom: 6px;
-    }
-    .cart-item .ci-name { font-weight: 600; font-size: 0.88rem; }
-    .cart-item .ci-detail { color: var(--muted); font-size: 0.72rem; }
-    .remove-btn {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 1px solid var(--danger); background: transparent;
-      color: var(--danger); cursor: pointer; font-size: 1rem; line-height: 1;
-    }
-
-    /* ── 空狀態 ── */
-    .empty { text-align: center; padding: 30px; color: var(--muted); font-size: 0.88rem; }
-
-    /* ── 隱藏 ── */
-    [hidden] { display: none !important; }
-
-    /* ── 分類標籤 ── */
-    .cat-tabs { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; }
-    .cat-tab {
-      padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--text); font-size: 0.78rem;
-      font-weight: 600; cursor: pointer; white-space: nowrap;
-    }
-    .cat-tab.active { background: var(--primary); color: #fff8ef; border-color: transparent; }
-
-    /* ── 甜度冰量選擇 ── */
-    .option-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-    .opt-btn {
-      padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--text); font-size: 0.72rem; cursor: pointer;
-    }
-    .opt-btn.sel { background: var(--accent); color: #fff; border-color: transparent; }
-
-    /* ── Modal ── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-      display: grid; place-items: center; padding: 16px;
-    }
-    .modal {
-      background: var(--panel); border-radius: var(--radius);
-      padding: 20px; max-width: 400px; width: 100%;
-      box-shadow: var(--shadow);
-    }
-    .modal h3 { font-family: var(--font-display); margin-bottom: 14px; }
+    :root,[data-theme="light"]{--bg:#f7f2ea;--surface:#fffdf9;--surface-2:#f2e8da;--panel:#ffffff;--border:#d7c1a1;--text:#2d1d10;--muted:#7e6851;--primary:#6d4320;--primary-2:#9f6a37;--accent:#d58b34;--ok:#2c8a52;--warn:#c16f17;--info:#356fa8;--danger:#b64040;--shadow:0 10px 32px rgba(86,54,24,.10);--radius:20px;--radius-sm:12px;--font-display:'Noto Serif TC',serif;--font-body:'Noto Sans TC',sans-serif}
+    [data-theme="dark"]{--bg:#171311;--surface:#221b18;--surface-2:#2c231f;--panel:#1c1613;--border:#4b3b31;--text:#f3e9db;--muted:#baaa97;--primary:#ca9f6c;--primary-2:#e0b27d;--accent:#f0b35a;--ok:#72c28b;--warn:#efad55;--info:#86b8e5;--danger:#e68b8b;--shadow:0 10px 32px rgba(0,0,0,.35)}
+    *{box-sizing:border-box;margin:0;padding:0}html,body{min-height:100dvh}
+    body{font-family:var(--font-body);background:radial-gradient(circle at top right,rgba(213,139,52,.12),transparent 28%),linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--bg) 78%,#fff 22%));color:var(--text)}
+    button,input,select,textarea{font:inherit}
+    .topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid color-mix(in srgb,var(--border) 70%,transparent);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo-box{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-2));display:grid;place-items:center;color:#fff7ef;box-shadow:var(--shadow);font-family:var(--font-display);font-weight:700;font-size:1.1rem}
+    .brand h1{font-family:var(--font-display);font-size:1.15rem}
+    .brand-sub{color:var(--muted);font-size:.78rem}
+    .topbar-right{display:flex;gap:8px;align-items:center}
+    .conn-dot{width:10px;height:10px;border-radius:50%;background:var(--danger)}.conn-dot.ok{background:var(--ok)}
+    .theme-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer}
+    .bottom-nav{position:fixed;left:10px;right:10px;bottom:10px;z-index:50;display:flex;gap:6px;padding:6px;border-radius:18px;background:color-mix(in srgb,var(--panel) 94%,transparent);border:1px solid color-mix(in srgb,var(--border) 86%,transparent);box-shadow:var(--shadow);backdrop-filter:blur(12px)}
+    .bottom-nav button{flex:1;min-height:46px;border-radius:14px;border:1px solid transparent;background:transparent;color:var(--text);font-size:.82rem;font-weight:700;cursor:pointer}
+    .bottom-nav button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff8ef}
+    .app{max-width:600px;margin:0 auto;padding:12px 12px 100px}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+    .stat{padding:14px;border-radius:var(--radius-sm);background:color-mix(in srgb,var(--panel) 96%,transparent);border:1px solid color-mix(in srgb,var(--border) 88%,transparent);box-shadow:var(--shadow)}
+    .stat .k{color:var(--muted);font-size:.74rem;margin-bottom:4px}.stat .v{font-size:1.6rem;font-weight:700}
+    .card{background:color-mix(in srgb,var(--panel) 96%,transparent);border:1px solid color-mix(in srgb,var(--border) 88%,transparent);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+    .card h3{font-family:var(--font-display);font-size:1rem;margin-bottom:12px}
+    .ticket{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:14px;margin-bottom:10px}
+    .ticket-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .ticket-id{font-weight:700;font-size:.95rem}.ticket-meta{color:var(--muted);font-size:.76rem}
+    .status{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;font-size:.72rem;font-weight:700;white-space:nowrap}
+    .s-pending{background:rgba(53,111,168,.12);color:var(--info)}.s-making{background:rgba(193,111,23,.14);color:var(--warn)}.s-done{background:rgba(44,138,82,.14);color:var(--ok)}.s-ready{background:rgba(109,67,32,.12);color:var(--primary)}.s-delivered{background:rgba(44,138,82,.08);color:var(--muted)}
+    .item-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;margin-bottom:6px;background:color-mix(in srgb,var(--surface-2) 64%,white 36%);gap:8px}
+    .item-info strong{display:block;font-size:.9rem}.item-info small{color:var(--muted);font-size:.74rem}
+    .item-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+    .btn{min-height:38px;border-radius:12px;border:1px solid var(--border);padding:0 14px;background:var(--surface);color:var(--text);cursor:pointer;font-size:.82rem;font-weight:500}
+    .btn.sm{min-height:32px;padding:0 10px;font-size:.76rem;border-radius:10px}
+    .btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff8ef;border-color:transparent}
+    .btn.ok{background:var(--ok);color:#fff;border-color:transparent}.btn.warn{background:var(--warn);color:#fff;border-color:transparent}
+    .btn.ghost{background:transparent}.btn:disabled{opacity:.4;cursor:not-allowed}
+    .form-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+    .form-row label{font-size:.82rem;font-weight:600;min-width:50px}
+    .form-row select,.form-row input{flex:1;min-height:38px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)}
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+    .cat-btn{text-align:left;padding:12px;border-radius:16px;border:0;cursor:pointer;min-height:70px;position:relative;overflow:hidden;background:linear-gradient(180deg,#7a4a29,#60381f);color:#fff9f2;box-shadow:0 6px 14px rgba(91,54,30,.18)}
+    .cat-btn:active{transform:scale(.985)}
+    .cat-btn.active{outline:3px solid var(--accent);outline-offset:-3px}
+    .cat-btn .ce{font-size:1.3rem;margin-bottom:4px;display:block}
+    .cat-btn .ct{font-size:.88rem;font-weight:900}
+    .cat-btn .cc{font-size:.68rem;opacity:.78;margin-top:2px}
+    .menu-list{display:grid;gap:6px;margin-bottom:12px}
+    .menu-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:14px;border:1px solid var(--border);background:var(--surface);cursor:pointer;gap:10px}
+    .menu-item:active{background:var(--surface-2)}
+    .mi-name{font-weight:700;font-size:.88rem}.mi-price{color:var(--primary);font-weight:700;font-size:.82rem;white-space:nowrap}
+    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:12px;background:var(--surface-2);margin-bottom:6px}
+    .ci-name{font-weight:600;font-size:.88rem}.ci-detail{color:var(--muted);font-size:.72rem}
+    .ci-price{color:var(--primary);font-weight:700;font-size:.82rem;white-space:nowrap}
+    .remove-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--danger);background:transparent;color:var(--danger);cursor:pointer;font-size:1rem;line-height:1}
+    .empty{text-align:center;padding:30px;color:var(--muted);font-size:.88rem}
+    [hidden]{display:none!important}
+    .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:grid;place-items:end center;padding:0}
+    .modal{background:var(--panel);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));max-width:500px;width:100%;box-shadow:var(--shadow);max-height:80dvh;overflow-y:auto}
+    .modal h3{font-family:var(--font-display);margin-bottom:14px}
+    .opt-group{margin-bottom:12px}
+    .opt-label{font-size:.82rem;font-weight:600;margin-bottom:6px}
+    .opt-row{display:flex;gap:6px;flex-wrap:wrap}
+    .opt-btn{padding:6px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.78rem;cursor:pointer}
+    .opt-btn.sel{background:var(--accent);color:#fff;border-color:transparent}
+    .total-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:14px;background:var(--surface-2);margin-bottom:10px;font-weight:700}
+    .total-bar .total-price{font-size:1.2rem;color:var(--primary)}
   </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="brand">
-    <div class="logo-box">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 9C4 6.79 5.79 5 8 5H13C17.42 5 21 8.58 21 13V14C21 16.21 19.21 18 17 18H11C7.13 18 4 14.87 4 11V9Z" stroke="currentColor" stroke-width="1.8"/>
-        <path d="M8 9H14.5M8 12H16M8 15H13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div>
-      <h1>A-bao</h1>
-      <div class="brand-sub" id="roleLabel">櫃檯</div>
-    </div>
+    <div class="logo-box">A</div>
+    <div><h1>A-bao</h1><div class="brand-sub" id="roleLabel">櫃檯</div></div>
   </div>
   <div class="topbar-right">
-    <div class="conn-dot" id="connDot" title="連線狀態"></div>
+    <div class="conn-dot" id="connDot"></div>
     <button class="theme-btn" id="themeBtn">☾</button>
   </div>
 </header>
 
 <div class="app">
-  <!-- 統計列 -->
   <div class="stats">
-    <div class="stat"><div class="k" id="stat1Label">待處理</div><div class="v" id="stat1Val">0</div></div>
-    <div class="stat"><div class="k" id="stat2Label">待做</div><div class="v" id="stat2Val">0</div></div>
+    <div class="stat"><div class="k" id="s1l">待處理</div><div class="v" id="s1v">0</div></div>
+    <div class="stat"><div class="k" id="s2l">可交單</div><div class="v" id="s2v">0</div></div>
   </div>
-
-  <!-- 各站內容 -->
   <div id="counterView"></div>
   <div id="drinkView" hidden></div>
   <div id="kitchenView" hidden></div>
   <div id="packingView" hidden></div>
 </div>
 
-<!-- 底部角色切換 -->
 <nav class="bottom-nav">
   <button class="active" data-role="counter">櫃檯</button>
   <button data-role="drink">飲料</button>
@@ -266,467 +109,246 @@
   <button data-role="packing">包裝</button>
 </nav>
 
-<!-- 甜度冰量 Modal -->
 <div class="modal-overlay" id="optionModal" hidden>
-  <div class="modal">
-    <h3 id="modalItemName"></h3>
-    <div id="modalOptions"></div>
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <input id="modalNote" placeholder="備註（加蛋、切半...）" style="flex:1;min-height:38px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);">
-      <button class="btn primary" id="modalConfirm">加入</button>
-    </div>
-  </div>
+  <div class="modal" id="modalContent"></div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-// A-bao 四站即時系統 — 前端
-// ═══════════════════════════════════════════════
+const S={role:'counter',menu:[],orders:{},cart:[],orderType:'外帶',table:'',selCat:null,};
+let ws=null;
+const connDot=document.getElementById('connDot');
 
-const STATE = {
-  role: 'counter',
-  menu: [],
-  orders: {},
-  cart: [],          // 櫃檯建單用
-  orderType: '外帶',
-  table: '',
-  menuCategory: '全部',
-  // modal
-  pendingItem: null,
-  selectedSugar: '正常',
-  selectedIce: '正常冰',
-};
-
-let ws = null;
-const connDot = document.getElementById('connDot');
-
-// ── WebSocket ──────────────────────────────────
-async function initWs() {
-  // 先確認後端活著
-  for (let i = 0; i < 15; i++) {
-    try {
-      const r = await fetch('/api/health');
-      if (r.ok) break;
-    } catch(e) {}
-    await new Promise(r => setTimeout(r, 3000));
-  }
+// ── WS ──
+async function initWs(){
+  for(let i=0;i<15;i++){try{const r=await fetch('/api/health');if(r.ok)break}catch(e){}await new Promise(r=>setTimeout(r,3000))}
   connectWs();
 }
-
-function connectWs() {
-  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  ws = new WebSocket(`${proto}//${location.host}/ws`);
-
-  ws.onopen = () => { connDot.classList.add('ok'); };
-  ws.onclose = () => { connDot.classList.remove('ok'); setTimeout(connectWs, 4000); };
-  ws.onerror = () => { connDot.classList.remove('ok'); };
-
-  ws.onmessage = (e) => {
-    const msg = JSON.parse(e.data);
-    if (msg.type === 'full_state') {
-      STATE.menu = msg.menu;
-      STATE.orders = msg.orders;
-    } else if (msg.type === 'order_created' || msg.type === 'order_updated') {
-      STATE.orders[msg.order.id] = msg.order;
-    }
+function connectWs(){
+  const p=location.protocol==='https:'?'wss:':'ws:';
+  ws=new WebSocket(`${p}//${location.host}/ws`);
+  ws.onopen=()=>{connDot.classList.add('ok')};
+  ws.onclose=()=>{connDot.classList.remove('ok');setTimeout(connectWs,4000)};
+  ws.onerror=()=>{connDot.classList.remove('ok')};
+  ws.onmessage=(e)=>{
+    const m=JSON.parse(e.data);
+    if(m.type==='full_state'){S.menu=m.menu;S.orders=m.orders}
+    else if(m.type==='order_created'||m.type==='order_updated'){S.orders[m.order.id]=m.order}
     render();
   };
 }
+function wsSend(m){if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m))}
 
-function wsSend(msg) {
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify(msg));
-  }
+// ── 角色 ──
+const RN={counter:'櫃檯',drink:'飲料站',kitchen:'廚房站',packing:'包裝站'};
+const navBtns=document.querySelectorAll('.bottom-nav button');
+const views={counter:document.getElementById('counterView'),drink:document.getElementById('drinkView'),kitchen:document.getElementById('kitchenView'),packing:document.getElementById('packingView')};
+navBtns.forEach(b=>b.addEventListener('click',()=>{
+  S.role=b.dataset.role;
+  navBtns.forEach(x=>x.classList.toggle('active',x.dataset.role===S.role));
+  Object.values(views).forEach(v=>v.hidden=true);views[S.role].hidden=false;
+  document.getElementById('roleLabel').textContent=RN[S.role];render();
+}));
+
+// ── 主題 ──
+const tb=document.getElementById('themeBtn');
+let th=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+document.documentElement.setAttribute('data-theme',th);tb.textContent=th==='dark'?'☀':'☾';
+tb.addEventListener('click',()=>{th=th==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',th);tb.textContent=th==='dark'?'☀':'☾'});
+
+// ── 工具 ──
+function ol(){return Object.values(S.orders).filter(o=>!o.delivered)}
+function sLbl(s){return{pending:'待製作',making:'製作中',done:'已完成',ready:'可交單',delivered:'已交單',partial:'部分完成',empty:''}[s]||s}
+function sCls(s){return{pending:'s-pending',making:'s-making',done:'s-done',ready:'s-ready',delivered:'s-delivered',partial:'s-making'}[s]||''}
+function cats(){const c=[...new Set(S.menu.map(m=>m.category))];return c}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// ── 渲染 ──
+function render(){
+  const o=ol();
+  if(S.role==='counter')renderCounter(o);
+  else if(S.role==='drink')renderStation(o,'drink');
+  else if(S.role==='kitchen')renderStation(o,'kitchen');
+  else renderPacking(o);
+  renderStats(o);
 }
 
-// ── 角色切換 ────────────────────────────────────
-const roleNames = { counter: '櫃檯', drink: '飲料站', kitchen: '廚房站', packing: '包裝站' };
-const navBtns = document.querySelectorAll('.bottom-nav button');
-const views = {
-  counter: document.getElementById('counterView'),
-  drink: document.getElementById('drinkView'),
-  kitchen: document.getElementById('kitchenView'),
-  packing: document.getElementById('packingView'),
-};
-
-navBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    STATE.role = btn.dataset.role;
-    navBtns.forEach(b => b.classList.toggle('active', b.dataset.role === STATE.role));
-    Object.values(views).forEach(v => v.hidden = true);
-    views[STATE.role].hidden = false;
-    document.getElementById('roleLabel').textContent = roleNames[STATE.role];
-    render();
-  });
-});
-
-// ── 主題切換 ────────────────────────────────────
-const themeBtn = document.getElementById('themeBtn');
-let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-document.documentElement.setAttribute('data-theme', theme);
-themeBtn.textContent = theme === 'dark' ? '☀' : '☾';
-themeBtn.addEventListener('click', () => {
-  theme = theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
-  themeBtn.textContent = theme === 'dark' ? '☀' : '☾';
-});
-
-// ── 工具 ────────────────────────────────────────
-function orderList() { return Object.values(STATE.orders).filter(o => !o.delivered); }
-function statusLabel(s) {
-  return { pending:'待製作', making:'製作中', done:'已完成', ready:'可交單', delivered:'已交單', partial:'部分完成', empty:'' }[s] || s;
-}
-function statusClass(s) {
-  return { pending:'s-pending', making:'s-making', done:'s-done', ready:'s-ready', delivered:'s-delivered', partial:'s-making' }[s] || '';
+function renderStats(o){
+  const s1l=document.getElementById('s1l'),s1v=document.getElementById('s1v'),s2l=document.getElementById('s2l'),s2v=document.getElementById('s2v');
+  if(S.role==='counter'){s1l.textContent='待處理訂單';s1v.textContent=o.length;s2l.textContent='可交單';s2v.textContent=o.filter(x=>x.status==='ready').length}
+  else if(S.role==='drink'){const it=o.flatMap(x=>x.items.filter(i=>i.station==='drink'&&i.status!=='done'));s1l.textContent='飲料待做';s1v.textContent=it.length;s2l.textContent='製作中';s2v.textContent=it.filter(i=>i.status==='making').length}
+  else if(S.role==='kitchen'){const it=o.flatMap(x=>x.items.filter(i=>i.station==='kitchen'&&i.status!=='done'));s1l.textContent='廚房待做';s1v.textContent=it.length;s2l.textContent='製作中';s2v.textContent=it.filter(i=>i.status==='making').length}
+  else{s1l.textContent='可交單';s1v.textContent=o.filter(x=>x.status==='ready').length;s2l.textContent='缺件中';s2v.textContent=o.filter(x=>x.status==='partial'||x.status==='making').length}
 }
 
-// ── 渲染 ────────────────────────────────────────
-function render() {
-  const ol = orderList();
-  if (STATE.role === 'counter') renderCounter(ol);
-  else if (STATE.role === 'drink') renderStation(ol, 'drink');
-  else if (STATE.role === 'kitchen') renderStation(ol, 'kitchen');
-  else if (STATE.role === 'packing') renderPacking(ol);
-  renderStats(ol);
-}
+// ── 櫃檯 ──
+function renderCounter(o){
+  const el=views.counter;
+  const cs=cats();
+  const selItems=S.selCat?S.menu.filter(m=>m.category===S.selCat):[];
+  const cartTotal=S.cart.reduce((a,c)=>a+c.price*c.qty,0);
 
-function renderStats(ol) {
-  const s1 = document.getElementById('stat1Label');
-  const v1 = document.getElementById('stat1Val');
-  const s2 = document.getElementById('stat2Label');
-  const v2 = document.getElementById('stat2Val');
-
-  if (STATE.role === 'counter') {
-    s1.textContent = '待處理訂單'; v1.textContent = ol.length;
-    s2.textContent = '可交單'; v2.textContent = ol.filter(o => o.status === 'ready').length;
-  } else if (STATE.role === 'drink') {
-    const items = ol.flatMap(o => o.items.filter(i => i.station === 'drink' && i.status !== 'done'));
-    s1.textContent = '飲料待做'; v1.textContent = items.length;
-    s2.textContent = '製作中'; v2.textContent = items.filter(i => i.status === 'making').length;
-  } else if (STATE.role === 'kitchen') {
-    const items = ol.flatMap(o => o.items.filter(i => i.station === 'kitchen' && i.status !== 'done'));
-    s1.textContent = '廚房待做'; v1.textContent = items.length;
-    s2.textContent = '製作中'; v2.textContent = items.filter(i => i.status === 'making').length;
-  } else {
-    s1.textContent = '待包裝'; v1.textContent = ol.filter(o => o.status === 'ready').length;
-    s2.textContent = '缺件中'; v2.textContent = ol.filter(o => o.status === 'partial' || o.status === 'making').length;
-  }
-}
-
-// ── 櫃檯 ────────────────────────────────────────
-function renderCounter(ol) {
-  const el = views.counter;
-  const cats = ['全部', ...new Set(STATE.menu.map(m => m.category))];
-
-  const filteredMenu = STATE.menuCategory === '全部'
-    ? STATE.menu
-    : STATE.menu.filter(m => m.category === STATE.menuCategory);
-
-  el.innerHTML = `
+  el.innerHTML=`
     <div class="card">
       <h3>建立新訂單</h3>
-      <div class="form-section">
-        <div class="form-row">
-          <label>類型</label>
-          <select id="orderType" onchange="STATE.orderType=this.value">
-            <option ${STATE.orderType==='外帶'?'selected':''}>外帶</option>
-            <option ${STATE.orderType==='內用'?'selected':''}>內用</option>
-          </select>
-          <input id="tableInput" placeholder="桌號" value="${STATE.table}" style="max-width:80px;" oninput="STATE.table=this.value"
-            ${STATE.orderType==='外帶'?'hidden':''}>
-        </div>
+      <div class="form-row">
+        <label>類型</label>
+        <select id="oType"><option ${S.orderType==='外帶'?'selected':''}>外帶</option><option ${S.orderType==='內用'?'selected':''}>內用</option></select>
+        ${S.orderType==='內用'?`<input id="tbl" placeholder="桌號" value="${esc(S.table)}" style="max-width:80px">`:''}
       </div>
-
-      <div class="cat-tabs">
-        ${cats.map(c => `<button class="cat-tab ${STATE.menuCategory===c?'active':''}" onclick="STATE.menuCategory='${c}';render();">${c}</button>`).join('')}
-      </div>
-
-      <div class="menu-grid">
-        ${filteredMenu.map(m => `
-          <button class="menu-item" onclick="addToCart('${m.id}')">
-            <div class="mi-name">${m.name}</div>
-            <div class="mi-meta">${m.category}・${m.station==='drink'?'飲料站':'廚房站'}</div>
-            <div class="mi-price">$${m.price}</div>
-          </button>
-        `).join('')}
-      </div>
-
-      ${STATE.cart.length ? `
-        <h3 style="margin-top:14px;">目前品項 (${STATE.cart.length})</h3>
-        ${STATE.cart.map((c,i) => `
-          <div class="cart-item">
-            <div>
-              <div class="ci-name">${c.name} ×${c.qty}</div>
-              <div class="ci-detail">${[c.sugar,c.ice,c.note].filter(Boolean).join('／') || '無備註'}</div>
-            </div>
-            <button class="remove-btn" onclick="STATE.cart.splice(${i},1);render();">✕</button>
-          </div>
-        `).join('')}
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn primary" style="flex:1;" onclick="submitOrder()">送出訂單</button>
-          <button class="btn ghost" onclick="STATE.cart=[];render();">清空</button>
-        </div>
-      ` : ''}
+      <div class="cat-grid">${cs.map(c=>{
+        const em=S.menu.find(m=>m.category===c)?.emoji||'';
+        const cnt=S.menu.filter(m=>m.category===c).length;
+        return `<button class="cat-btn ${S.selCat===c?'active':''}" onclick="selectCat('${esc(c)}')"><span class="ce">${em}</span><div class="ct">${esc(c)}</div><div class="cc">${cnt} 品項</div></button>`;
+      }).join('')}</div>
+      ${S.selCat?`<div class="menu-list">${selItems.map(m=>{
+        let priceStr='$'+m.price;
+        if(m.has_temp)priceStr='熱$'+(m.hot_price||m.price)+' / 冰$'+(m.cold_price||m.price);
+        return `<div class="menu-item" onclick="addToCart('${m.id}')"><div><div class="mi-name">${esc(m.name)}</div></div><div class="mi-price">${priceStr}</div></div>`;
+      }).join('')}</div>`:'<div class="empty">👆 點選上方分類瀏覽品項</div>'}
     </div>
-
+    ${S.cart.length?`
+      <div class="card">
+        <h3>購物車 (${S.cart.length})</h3>
+        ${S.cart.map((c,i)=>`<div class="cart-item"><div style="flex:1"><div class="ci-name">${esc(c.name)} ×${c.qty}</div><div class="ci-detail">${[c.temp,c.size,c.sugar,c.ice,c.note].filter(Boolean).join('／')||'無備註'}</div></div><div class="ci-price">$${c.price*c.qty}</div><button class="remove-btn" onclick="S.cart.splice(${i},1);render()">✕</button></div>`).join('')}
+        <div class="total-bar"><span>合計</span><span class="total-price">$${cartTotal}</span></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn primary" style="flex:1" onclick="submitOrder()">送出訂單</button>
+          <button class="btn ghost" onclick="S.cart=[];render()">清空</button>
+        </div>
+      </div>
+    `:''}
     <div class="card">
       <h3>目前訂單</h3>
-      ${ol.length === 0 ? '<div class="empty">目前沒有訂單</div>' :
-        ol.slice().reverse().map(o => renderTicket(o, 'counter')).join('')}
-    </div>
-  `;
-}
-
-function renderTicket(o, view) {
-  const label = `${o.type}${o.table ? ' ' + o.table + '桌' : ''}`;
-  const itemsHtml = o.items.map(it => {
-    const detail = [
-      it.station === 'drink' ? '飲料站' : '廚房站',
-      it.sugar, it.ice, it.note
-    ].filter(Boolean).join('／');
-
-    let actionBtn = '';
-    if (view === 'counter') {
-      actionBtn = `<span class="status ${statusClass(it.status)}">${statusLabel(it.status)}</span>`;
-    }
-    return `<div class="item-row">
-      <div class="item-info"><strong>${it.name} ×${it.qty}</strong><small>${detail}</small></div>
-      <div class="item-actions">${actionBtn}</div>
+      ${o.length===0?'<div class="empty">目前沒有訂單</div>':o.slice().reverse().map(x=>renderTicket(x)).join('')}
     </div>`;
+
+  // 綁定事件
+  document.getElementById('oType')?.addEventListener('change',function(){S.orderType=this.value;render()});
+  document.getElementById('tbl')?.addEventListener('input',function(){S.table=this.value});
+}
+
+window.selectCat=function(c){S.selCat=S.selCat===c?null:c;render()};
+
+function renderTicket(o){
+  const lbl=`${o.type}${o.table?' '+o.table+'桌':''}`;
+  const items=o.items.map(it=>{
+    const det=[it.station==='drink'?'飲料站':'廚房站',it.temp,it.size,it.sugar,it.ice,it.note].filter(Boolean).join('／');
+    return `<div class="item-row"><div class="item-info"><strong>${esc(it.name)} ×${it.qty}</strong><small>${esc(det)}</small></div><div class="item-actions"><span class="status ${sCls(it.status)}">${sLbl(it.status)}</span></div></div>`;
   }).join('');
-
-  return `<article class="ticket">
-    <div class="ticket-head">
-      <div>
-        <div class="ticket-id">#${o.id} ${label}</div>
-        <div class="ticket-meta">${o.created_at}｜${o.items.length} 品項</div>
-      </div>
-      <span class="status ${statusClass(o.status)}">${statusLabel(o.status)}</span>
-    </div>
-    ${itemsHtml}
-  </article>`;
+  return `<article class="ticket"><div class="ticket-head"><div><div class="ticket-id">#${o.id} ${esc(lbl)}</div><div class="ticket-meta">${o.created_at}｜${o.items.length}品項｜$${o.total||0}</div></div><span class="status ${sCls(o.status)}">${sLbl(o.status)}</span></div>${items}</article>`;
 }
 
-// ── 飲料/廚房站 ─────────────────────────────────
-function renderStation(ol, station) {
-  const el = views[station];
-  const stationName = station === 'drink' ? '飲料站' : '廚房站';
+// ── 飲料/廚房站 ──
+function renderStation(o,station){
+  const el=views[station];
+  const name=station==='drink'?'飲料站':'廚房站';
+  const pending=[],making=[],done=[];
+  for(const ord of o)for(const it of ord.items)if(it.station===station){
+    const x={...it,orderId:ord.id,orderType:ord.type,table:ord.table};
+    if(it.status==='pending')pending.push(x);else if(it.status==='making')making.push(x);else if(it.status==='done')done.push(x);
+  }
+  const renderItem=(it,btns)=>{
+    const det=[it.temp,it.size,it.sugar,it.ice,it.note,it.orderType+(it.table?' '+it.table+'桌':'')].filter(Boolean).join('／');
+    return `<div class="item-row"><div class="item-info"><strong>#${it.orderId} ${esc(it.name)} ×${it.qty}</strong><small>${esc(det)}</small></div><div class="item-actions">${btns}</div></div>`;
+  };
+  el.innerHTML=`
+    ${making.length?`<div class="card"><h3>🔥 製作中 (${making.length})</h3>${making.map(it=>renderItem(it,`<button class="btn sm ok" onclick="upd('${it.orderId}','${it.id}','done')">完成</button>`)).join('')}</div>`:''}
+    <div class="card"><h3>📋 待製作 (${pending.length})</h3>${pending.length?pending.map(it=>renderItem(it,`<button class="btn sm warn" onclick="upd('${it.orderId}','${it.id}','making')">開始</button>`)).join(''):'<div class="empty">沒有待做項目</div>'}</div>
+    ${done.length?`<div class="card"><h3>✅ 已完成 (${done.length})</h3>${done.slice(-6).reverse().map(it=>renderItem(it,`<span class="status s-done">已完成</span>`)).join('')}</div>`:''}`;
+}
+window.upd=function(oid,iid,st){wsSend({action:'update_item_status',order_id:oid,item_id:iid,status:st})};
 
-  // 收集所有該站的品項（附帶訂單資訊）
-  const items = [];
-  for (const o of ol) {
-    for (const it of o.items) {
-      if (it.station === station && it.status !== 'done') {
-        items.push({ ...it, orderId: o.id, orderType: o.type, table: o.table });
-      }
+// ── 包裝站 ──
+function renderPacking(o){
+  const el=views.packing;
+  const ready=o.filter(x=>x.status==='ready');
+  const prog=o.filter(x=>x.status!=='ready'&&x.status!=='pending');
+  const pend=o.filter(x=>x.status==='pending');
+  el.innerHTML=`
+    ${ready.length?`<div class="card"><h3>✅ 可交單 (${ready.length})</h3>${ready.map(x=>`<article class="ticket"><div class="ticket-head"><div><div class="ticket-id">#${x.id} ${x.type}${x.table?' '+x.table+'桌':''}</div><div class="ticket-meta">${x.items.length}品項全部完成｜$${x.total||0}</div></div><span class="status s-ready">可交單</span></div><button class="btn primary" onclick="deliver('${x.id}')">確認交單</button></article>`).join('')}</div>`:''}
+    ${prog.length?`<div class="card"><h3>⏳ 製作中 (${prog.length})</h3>${prog.map(x=>{const d=x.items.filter(i=>i.status==='done').length;const t=x.items.length;const miss=x.items.filter(i=>i.status!=='done').map(i=>i.name+'('+(i.station==='drink'?'飲料':'廚房')+')').join('、');return `<article class="ticket"><div class="ticket-head"><div><div class="ticket-id">#${x.id} ${x.type}</div><div class="ticket-meta">${d}/${t} 完成｜缺：${esc(miss)}</div></div><span class="status s-making">缺件</span></div></article>`}).join('')}</div>`:''}
+    ${pend.length?`<div class="card"><h3>📋 尚未開始 (${pend.length})</h3>${pend.map(x=>`<article class="ticket"><div class="ticket-head"><div><div class="ticket-id">#${x.id} ${x.type}</div></div><span class="status s-pending">待製作</span></div></article>`).join('')}</div>`:''}
+    ${o.length===0?'<div class="card"><div class="empty">目前沒有訂單</div></div>':''}`;
+}
+window.deliver=function(oid){wsSend({action:'mark_delivered',order_id:oid})};
+
+// ── 加入購物車 + Modal ──
+const SUGARS=['正常','少糖','半糖','微糖','無糖'];
+const ICES=['正常冰','少冰','微冰','去冰'];
+let modalState={sugar:'正常',ice:'正常冰',temp:'冰',size:'M',note:'',item:null};
+
+window.addToCart=function(mid){
+  const item=S.menu.find(m=>m.id===mid);
+  if(!item)return;
+  modalState={sugar:'正常',ice:'正常冰',temp:'冰',size:'M',note:'',item:item};
+  renderModal();
+  document.getElementById('optionModal').hidden=false;
+};
+
+function renderModal(){
+  const it=modalState.item;
+  if(!it)return;
+  const mc=document.getElementById('modalContent');
+  // 算價格
+  let price=it.price;
+  if(it.has_temp){
+    if(modalState.temp==='熱')price=it.hot_price||it.price;
+    else price=it.cold_price||it.price;
+    if(modalState.size==='L'){
+      if(modalState.temp==='熱'&&it.L_hot)price=it.L_hot;
+      else if(modalState.temp==='冰'&&it.L_cold)price=it.L_cold;
+      else if(it.L_price)price=it.L_price;
     }
   }
-  // 也顯示最近完成的
-  const doneItems = [];
-  for (const o of ol) {
-    for (const it of o.items) {
-      if (it.station === station && it.status === 'done') {
-        doneItems.push({ ...it, orderId: o.id, orderType: o.type, table: o.table });
-      }
-    }
-  }
+  if(!it.has_temp&&it.L_price&&modalState.size==='L')price=it.L_price;
 
-  el.innerHTML = `
-    <div class="card">
-      <h3>${stationName}待做清單</h3>
-      ${items.length === 0 ? '<div class="empty">目前沒有待做項目</div>' :
-        items.map(it => {
-          const detail = [it.sugar, it.ice, it.note, it.orderType + (it.table ? ' '+it.table+'桌' : '')].filter(Boolean).join('／');
-          const btnHtml = it.status === 'pending'
-            ? `<button class="btn sm warn" onclick="updateItemStatus('${it.orderId}','${it.id}','making')">開始做</button>`
-            : `<button class="btn sm ok" onclick="updateItemStatus('${it.orderId}','${it.id}','done')">完成</button>`;
-          return `<div class="item-row">
-            <div class="item-info">
-              <strong>#${it.orderId} ${it.name} ×${it.qty}</strong>
-              <small>${detail}</small>
-            </div>
-            <div class="item-actions">${btnHtml}</div>
-          </div>`;
-        }).join('')}
+  mc.innerHTML=`
+    <h3>${esc(it.name)} <span style="color:var(--primary)">$${price}</span></h3>
+    ${it.is_drink?`
+      ${it.has_temp?`<div class="opt-group"><div class="opt-label">溫度</div><div class="opt-row">
+        <button class="opt-btn ${modalState.temp==='冰'?'sel':''}" onclick="mSet('temp','冰')">冰</button>
+        <button class="opt-btn ${modalState.temp==='熱'?'sel':''}" onclick="mSet('temp','熱')">熱</button>
+      </div></div>`:''}
+      ${(it.L_hot||it.L_cold||it.L_price)?`<div class="opt-group"><div class="opt-label">杯型</div><div class="opt-row">
+        <button class="opt-btn ${modalState.size==='M'?'sel':''}" onclick="mSet('size','M')">M</button>
+        <button class="opt-btn ${modalState.size==='L'?'sel':''}" onclick="mSet('size','L')">L</button>
+      </div></div>`:''}
+      <div class="opt-group"><div class="opt-label">甜度</div><div class="opt-row">${SUGARS.map(s=>`<button class="opt-btn ${modalState.sugar===s?'sel':''}" onclick="mSet('sugar','${s}')">${s}</button>`).join('')}</div></div>
+      <div class="opt-group"><div class="opt-label">冰量</div><div class="opt-row">${ICES.map(s=>`<button class="opt-btn ${modalState.ice===s?'sel':''}" onclick="mSet('ice','${s}')">${s}</button>`).join('')}</div></div>
+    `:''}
+    <div class="opt-group"><div class="opt-label">備註</div>
+      <input id="mNote" value="${esc(modalState.note)}" placeholder="加蛋、切半、不要洋蔥..." style="width:100%;min-height:38px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)">
     </div>
-    ${doneItems.length ? `
-      <div class="card">
-        <h3>已完成</h3>
-        ${doneItems.slice(-8).reverse().map(it => `
-          <div class="item-row" style="opacity:0.6;">
-            <div class="item-info">
-              <strong>#${it.orderId} ${it.name}</strong>
-              <small>${it.orderType}</small>
-            </div>
-            <span class="status s-done">已完成</span>
-          </div>
-        `).join('')}
-      </div>
-    ` : ''}
-  `;
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn primary" style="flex:1" onclick="confirmAdd(${price})">加入 $${price}</button>
+      <button class="btn" onclick="closeModal()">取消</button>
+    </div>`;
 }
 
-// ── 包裝站 ──────────────────────────────────────
-function renderPacking(ol) {
-  const el = views.packing;
-  const ready = ol.filter(o => o.status === 'ready');
-  const partial = ol.filter(o => o.status !== 'ready' && o.status !== 'pending');
-  const pending = ol.filter(o => o.status === 'pending');
+window.mSet=function(k,v){modalState[k]=v;renderModal()};
+window.closeModal=function(){document.getElementById('optionModal').hidden=true};
+document.getElementById('optionModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
-  el.innerHTML = `
-    ${ready.length ? `
-      <div class="card">
-        <h3>可交單</h3>
-        ${ready.map(o => {
-          const label = `${o.type}${o.table ? ' ' + o.table + '桌' : ''}`;
-          return `<article class="ticket">
-            <div class="ticket-head">
-              <div>
-                <div class="ticket-id">#${o.id} ${label}</div>
-                <div class="ticket-meta">${o.created_at}｜${o.items.length} 品項全部完成</div>
-              </div>
-              <span class="status s-ready">可交單</span>
-            </div>
-            <div style="display:flex;gap:8px;">
-              <button class="btn primary" onclick="markDelivered('${o.id}')">確認交單</button>
-            </div>
-          </article>`;
-        }).join('')}
-      </div>
-    ` : ''}
-
-    ${partial.length ? `
-      <div class="card">
-        <h3>製作中 / 部分完成</h3>
-        ${partial.map(o => {
-          const label = `${o.type}${o.table ? ' ' + o.table + '桌' : ''}`;
-          const doneCount = o.items.filter(i => i.status === 'done').length;
-          const total = o.items.length;
-          const missing = o.items.filter(i => i.status !== 'done').map(i =>
-            `${i.name}(${i.station === 'drink' ? '飲料' : '廚房'})`
-          ).join('、');
-          return `<article class="ticket">
-            <div class="ticket-head">
-              <div>
-                <div class="ticket-id">#${o.id} ${label}</div>
-                <div class="ticket-meta">${doneCount}/${total} 完成｜缺：${missing}</div>
-              </div>
-              <span class="status s-making">缺件</span>
-            </div>
-          </article>`;
-        }).join('')}
-      </div>
-    ` : ''}
-
-    ${pending.length ? `
-      <div class="card">
-        <h3>尚未開始</h3>
-        ${pending.map(o => `
-          <article class="ticket">
-            <div class="ticket-head">
-              <div><div class="ticket-id">#${o.id} ${o.type}</div></div>
-              <span class="status s-pending">待製作</span>
-            </div>
-          </article>
-        `).join('')}
-      </div>
-    ` : ''}
-
-    ${ol.length === 0 ? '<div class="card"><div class="empty">目前沒有訂單</div></div>' : ''}
-  `;
-}
-
-// ── 操作 ────────────────────────────────────────
-function addToCart(menuId) {
-  const item = STATE.menu.find(m => m.id === menuId);
-  if (!item) return;
-
-  if (item.station === 'drink') {
-    // 飲料：打開 modal 選甜度冰量
-    STATE.pendingItem = item;
-    STATE.selectedSugar = '正常';
-    STATE.selectedIce = '正常冰';
-    showOptionModal(item);
-  } else {
-    // 廚房：直接加入，可填備註
-    STATE.pendingItem = item;
-    document.getElementById('modalItemName').textContent = item.name;
-    document.getElementById('modalOptions').innerHTML = '';
-    document.getElementById('modalNote').value = '';
-    document.getElementById('optionModal').hidden = false;
-  }
-}
-
-const SUGARS = ['正常', '少糖', '半糖', '微糖', '無糖'];
-const ICES = ['正常冰', '少冰', '微冰', '去冰', '熱'];
-
-function showOptionModal(item) {
-  document.getElementById('modalItemName').textContent = item.name;
-  document.getElementById('modalNote').value = '';
-
-  const optDiv = document.getElementById('modalOptions');
-  optDiv.innerHTML = `
-    <div style="margin-bottom:10px;">
-      <div style="font-size:0.82rem;font-weight:600;margin-bottom:6px;">甜度</div>
-      <div class="option-row">
-        ${SUGARS.map(s => `<button class="opt-btn ${STATE.selectedSugar===s?'sel':''}" onclick="STATE.selectedSugar='${s}';showOptionModal(STATE.pendingItem)">${s}</button>`).join('')}
-      </div>
-    </div>
-    <div>
-      <div style="font-size:0.82rem;font-weight:600;margin-bottom:6px;">冰量</div>
-      <div class="option-row">
-        ${ICES.map(s => `<button class="opt-btn ${STATE.selectedIce===s?'sel':''}" onclick="STATE.selectedIce='${s}';showOptionModal(STATE.pendingItem)">${s}</button>`).join('')}
-      </div>
-    </div>
-  `;
-  document.getElementById('optionModal').hidden = false;
-}
-
-document.getElementById('modalConfirm').addEventListener('click', () => {
-  const item = STATE.pendingItem;
-  if (!item) return;
-  STATE.cart.push({
-    menu_id: item.id,
-    name: item.name,
-    qty: 1,
-    sugar: item.station === 'drink' ? STATE.selectedSugar : '',
-    ice: item.station === 'drink' ? STATE.selectedIce : '',
-    note: document.getElementById('modalNote').value.trim(),
+window.confirmAdd=function(price){
+  const it=modalState.item;
+  const note=document.getElementById('mNote')?.value?.trim()||'';
+  S.cart.push({
+    menu_id:it.id,name:it.name,qty:1,price:price,
+    sugar:it.is_drink?modalState.sugar:'',
+    ice:it.is_drink?modalState.ice:'',
+    temp:it.has_temp?modalState.temp:'',
+    size:(it.L_hot||it.L_cold||it.L_price)?modalState.size:'',
+    note:note,
   });
-  document.getElementById('optionModal').hidden = true;
-  STATE.pendingItem = null;
-  render();
-});
+  closeModal();render();
+};
 
-// 點 modal 外面關閉
-document.getElementById('optionModal').addEventListener('click', (e) => {
-  if (e.target.id === 'optionModal') {
-    document.getElementById('optionModal').hidden = true;
-  }
-});
+window.submitOrder=function(){
+  if(!S.cart.length)return;
+  wsSend({action:'create_order',order_type:S.orderType,table:S.table,items:S.cart});
+  S.cart=[];S.table='';S.selCat=null;render();
+};
 
-function submitOrder() {
-  if (STATE.cart.length === 0) return;
-  wsSend({
-    action: 'create_order',
-    order_type: STATE.orderType,
-    table: STATE.table,
-    items: STATE.cart,
-  });
-  STATE.cart = [];
-  STATE.table = '';
-  render();
-}
-
-function updateItemStatus(orderId, itemId, status) {
-  wsSend({ action: 'update_item_status', order_id: orderId, item_id: itemId, status });
-}
-
-function markDelivered(orderId) {
-  wsSend({ action: 'mark_delivered', order_id: orderId });
-}
-
-// ── 啟動 ────────────────────────────────────────
 initWs();
 </script>
 </body>
