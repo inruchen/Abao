@@ -3,7 +3,7 @@ A-bao 四站點餐系統 — 後端（完整菜單版）
 FastAPI + WebSocket 廣播
 """
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from datetime import datetime
@@ -423,6 +423,24 @@ async def get_menu():
 @app.get("/")
 async def root():
     return FileResponse("index.html")
+import os
+import httpx
+
+@app.post("/api/tarot-reading")
+async def tarot_reading(request: Request):
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    body = await request.json()
+    async with httpx.AsyncClient(timeout=60) as client:
+        resp = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json=body,
+        )
+    return resp.json()
 
 if __name__ == "__main__":
     import uvicorn
