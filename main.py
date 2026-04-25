@@ -428,20 +428,22 @@ import httpx
 
 @app.post("/api/tarot-reading")
 async def tarot_reading(request: Request):
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
     body = await request.json()
+    # 轉換成 OpenRouter 格式
+    messages = body.get("messages", [])
+    or_body = {
+        "model": "google/gemini-flash-1.5",
+        "messages": messages,
+        "max_tokens": body.get("max_tokens", 2500),
+    }
     async with httpx.AsyncClient(timeout=60) as client:
         resp = await client.post(
-            "https://api.anthropic.com/v1/messages",
+            "https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "x-api-key": api_key,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
             },
-            json=body,
+            json=or_body,
         )
     return resp.json()
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
