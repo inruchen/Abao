@@ -433,7 +433,7 @@ async def tarot_reading(request: Request):
     # 轉換成 OpenRouter 格式
     messages = body.get("messages", [])
     or_body = {
-        "model": "google/gemini-flash-1.5",
+        "model": "google/gemini-2.0-flash-001",
         "messages": messages,
         "max_tokens": body.get("max_tokens", 2500),
     }
